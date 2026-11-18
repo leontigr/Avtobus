@@ -1,0 +1,174 @@
+{
+  "50AC": {
+    "a": "BAT48_WERT_SOH_C",
+    "d": "Состояние здоровья ёмкости",
+    "f": [
+      {
+        "n": "STAT_SOH_C_WERT",
+        "t": "u8",
+        "at": 0,
+        "u": "%",
+        "d": "Состояние здоровья ёмкости (SOH)"
+      }
+    ]
+  },
+  "AA56": {
+    "a": "MESSWERTE_BATT48",
+    "d": "Параметры аккумулятора 48 В",
+    "f": [
+      {
+        "n": "STAT_SPANNUNG_WERT",
+        "t": "u16",
+        "at": 0,
+        "k": 0.01,
+        "u": "V",
+        "d": "Напряжение на клеммах аккумулятора"
+      },
+      {
+        "n": "STAT_STROM_WERT",
+        "t": "s16",
+        "at": 2,
+        "k": 0.1,
+        "u": "A",
+        "d": "Ток аккумулятора; отрицательное значение означает зарядку"
+      },
+      {
+        "n": "STAT_TEMPERATUR_WERT",
+        "t": "s16",
+        "at": 4,
+        "k": 0.5,
+        "u": "°C",
+        "d": "Максимальная температура ячейки"
+      },
+      {
+        "n": "STAT_ENERGIEDURCHSATZ_WERT",
+        "t": "u16",
+        "at": 6,
+        "k": 0.2,
+        "u": "kWh",
+        "d": "Суммарный энергетический поток за весь срок службы"
+      },
+      {
+        "n": "STAT_LADEZAEHLER_GESAMT_WERT",
+        "t": "u16",
+        "at": 8,
+        "k": 0.1,
+        "u": "Ah",
+        "d": "Счётчик суммарного заряда"
+      },
+      {
+        "n": "STAT_ENTLADEZAEHLER_GESAMT_WERT",
+        "t": "u16",
+        "at": 10,
+        "k": 0.1,
+        "u": "Ah",
+        "d": "Счётчик суммарного разряда"
+      },
+      {
+        "n": "STAT_LADEZUSTAND_BILANZ_WERT",
+        "t": "s16",
+        "at": 12,
+        "k": 0.1,
+        "u": "Ah",
+        "d": "Баланс заряда"
+      },
+      {
+        "n": "STAT_SPEICHER_SOC_WERT",
+        "t": "u8",
+        "at": 14,
+        "u": "%",
+        "d": "Уровень заряда"
+      },
+      {
+        "n": "STAT_SPEICHER_SOC_QUALITAET_WERT",
+        "t": "u8",
+        "at": 15,
+        "u": "%",
+        "d": "Точность оценки уровня заряда (SOC)"
+      },
+      {
+        "n": "STAT_PACKSPANNUNG_WERT",
+        "t": "u16",
+        "at": 16,
+        "k": 0.01,
+        "u": "V",
+        "d": "Напряжение батарейного блока"
+      },
+      {
+        "n": "STAT_NENNKAPAZITAET_WERT",
+        "t": "u8",
+        "at": 18,
+        "k": 0.1,
+        "u": "Ah",
+        "d": "Номинальная ёмкость"
+      },
+      {
+        "n": "STAT_INNENWIDERSTAND_INITIAL_WERT",
+        "t": "u8",
+        "at": 19,
+        "k": 0.25,
+        "u": "mOhm",
+        "d": "Начальное внутреннее сопротивление"
+      },
+      {
+        "n": "STAT_INNENWIDERSTAND_AKTUELL_WERT",
+        "t": "u8",
+        "at": 20,
+        "k": 0.25,
+        "u": "mOhm",
+        "d": "Текущее внутреннее сопротивление"
+      },
+      {
+        "n": "STAT_INNENWIDERSTAND_AKTUELL_QUALITAET_WERT",
+        "t": "u8",
+        "at": 21,
+        "u": "%",
+        "d": "Точность оценки внутреннего сопротивления"
+      },
+      {
+        "n": "STAT_KAPAZITAET_IST_WERT",
+        "t": "u8",
+        "at": 22,
+        "k": 0.1,
+        "u": "Ah",
+        "d": "Измеренная ёмкость"
+      },
+      {
+        "n": "STAT_KAPAZITAET_AKTUELL_WERT",
+        "t": "u8",
+        "at": 23,
+        "k": 0.1,
+        "u": "Ah",
+        "d": "Текущая ёмкость"
+      },
+      {
+        "n": "STAT_KAPAZITAET_IST_QUALITAET_WERT",
+        "t": "u8",
+        "at": 24,
+        "u": "%",
+        "d": "Точность оценки измеренной ёмкости"
+      },
+      {
+        "n": "STAT_KAPAZITAET_AKTUELL_QUALITAET_WERT",
+        "t": "u8",
+        "at": 25,
+        "u": "%",
+        "d": "Точность оценки текущей ёмкости"
+      },
+      {
+        "n": "STAT_SPEICHER_SOH_WERT",
+        "t": "u8",
+        "at": 26,
+        "u": "%",
+        "d": "Состояние здоровья (SOH)"
+      },
+      {
+        "n": "STAT_SPEICHER_SOH_QUALITAET_WERT",
+        "t": "u8",
+        "at": 27,
+        "u": "%",
+        "d": "Точность оценки состояния здоровья (SOH)"
+      }
+    ]
+  }
+}
