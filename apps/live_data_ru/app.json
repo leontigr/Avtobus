@@ -1,8 +1,8 @@
 {
   "id": "live_data_ru",
-  "title": "Live Data RU",
+  "title": "Данные онлайн RU",
   "description": "Русифицированная версия Live Data: текущие параметры автомобиля и блоков управления, бортовой компьютер поездок и пользовательские экраны приборов.",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "vendor": "custom",
   "loggingId": "OA9D",
   "iconGlyph": "gauge",
@@ -102,19 +102,19 @@
       "buttons": [
         [
           "BTN_ACTION",
-          "Layout"
+          "Макет"
         ],
         [
           "BTN_PAGE",
-          "Next page"
+          "Следующая страница"
         ],
         [
           "BTN_BROWSE",
-          "Browse"
+          "Обзор"
         ],
         [
           "BTN_SETTINGS",
-          "Settings"
+          "Настройки"
         ]
       ]
     }
@@ -155,35 +155,35 @@
   "settings": [
     {
       "key": "show",
-      "label": "Unit pages show",
+      "label": "Отображение страниц блоков управления",
       "type": "choice",
       "default": "known",
       "reset": 2,
       "options": [
         [
           "known",
-          "What the unit may have"
+          "Все параметры, предусмотренные блоком"
         ],
         [
           "answering",
-          "Only what answered"
+          "Только параметры с ответом"
         ],
         [
           "all",
-          "Everything it lists"
+          "Полный список параметров блока"
         ]
       ]
     },
     {
       "key": "autoScan",
-      "label": "Scan units when opened",
+      "label": "Сканировать блоки при открытии",
       "type": "bool",
       "default": true,
       "options": []
     },
     {
       "key": "widget",
-      "label": "Home-screen widget shows",
+      "label": "Виджет главного экрана",
       "type": "choice",
       "default": "1",
       "options": [
@@ -215,27 +215,27 @@
     },
     {
       "key": "widgetFit",
-      "label": "Home-screen widget: picture",
+      "label": "Размер изображения виджета",
       "type": "choice",
       "default": "medium",
       "options": [
         [
           "small",
-          "Small, clear of the edges"
+          "Маленькое, с отступами"
         ],
         [
           "medium",
-          "Medium"
+          "Среднее"
         ],
         [
           "large",
-          "Fill the widget"
+          "На всю область виджета"
         ]
       ]
     },
     {
       "key": "widgetFps",
-      "label": "Home-screen widget: redraw per second",
+      "label": "Частота обновления виджета",
       "type": "number",
       "unit": "fps",
       "default": 8,
@@ -252,14 +252,14 @@
     },
     {
       "key": "trips",
-      "label": "Trip computer (counts every drive)",
+      "label": "Бортовой компьютер (учитывать каждую поездку)",
       "type": "bool",
       "default": true,
       "options": []
     },
     {
       "key": "currency",
-      "label": "Currency",
+      "label": "Валюта",
       "type": "choice",
       "default": "EUR",
       "options": [

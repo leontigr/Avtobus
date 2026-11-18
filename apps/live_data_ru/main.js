@@ -86,8 +86,8 @@ const CLOSEST = { 0x12: 'DME8FF_R', 0x13: 'DME8FF_R' };
 const ABSENT = [0x11, 0x12, 0x31];   // NRCs that mean "this unit has no such value"
 
 // the baked fonts are ASCII + a few signs: German letters spelled out
-const ascii = (s) => String(s).replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/Ä/g, 'Ae')
-    .replace(/Ö/g, 'Oe').replace(/Ü/g, 'Ue').replace(/ß/g, 'ss').replace(/µ/g, 'u').replace(/[^\x20-\x7e°²³±·]/g, '');
+// Russian package includes the Cyrillic font atlas; preserve Unicode display text.
+const ascii = (s) => String(s);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const readJson = (f, dflt) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch (e) { return dflt; } };
 const hexs = (b) => Array.prototype.map.call(b, (x) => hex(x)).join(' ');
@@ -242,9 +242,9 @@ mgu.run({
 
         function nameOf(u, row) {
             const f = row.e.f[row.field];
-            if (row.kind !== 'sgbd') return f.d || row.e.d;
+            if (row.kind !== 'sgbd') return translate(f.d || row.e.d);
             const de = f.d || row.e.d, multi = row.e.f.length > 1 && !f.d;
-            let s = CAT.get(u.sgbd + '.en.json', de) || de;
+            let s = CAT.get(u.sgbd + '.ru.json', de) || de;
             if (!s || s === '-') s = f.n && f.n !== '-' ? f.n : row.e.a;
             return ascii(s) + (multi ? ' (' + (row.field + 1) + ')' : '');
         }
@@ -466,7 +466,7 @@ mgu.run({
             const v = shownTemp(sigValue(it));
             if (!v) return { text: sigSubs || sigDemo() ? 'no data' : '...', dim: true };
             if (v.bad) return { text: 'no data', dim: true };
-            if (v.text !== undefined) return { text: v.text, dim: !!v.dim };
+            if (v.text !== undefined) return { text: translate(v.text), dim: !!v.dim };
             if (v.raw) return { text: v.x ? '0x' + hex(v.n, 4) : String(v.n) };
             const s = v.n.toFixed(it.d == null ? 1 : it.d);
             return { text: (/^-0(\.0+)?$/.test(s) ? s.slice(1) : s) + (v.u ? ' ' + v.u : '') };
@@ -724,7 +724,7 @@ mgu.run({
             (usefulOf(u) || []).forEach((g) => out.push({
                 name: translate('Engine unit') + ': ' + translate(g.group),
                 items: g.items.map((ur) => ({
-                    key: u.addr + ':useful:' + ur.item.name, name: bankName(u, ur.item), text: () => usefulValue(u, ur),
+                    key: u.addr + ':useful:' + ur.item.name, name: translate(bankName(u, ur.item)), text: () => usefulValue(u, ur),
                     fav: { addr: u.addr, sgbd: u.sgbd, useful: ur.item.name, c: ur.item.c || ur.item.minus, minus: !!ur.item.minus, u: ur.item.u, name: ur.item.name },
                 })),
             }));
@@ -733,7 +733,7 @@ mgu.run({
             (s2 ? usefulOf(s2) || [] : []).forEach((g) => out.push({
                 name: translate('Engine unit') + ', ' + translate('Bank 2') + ': ' + translate(g.group),
                 items: g.items.map((ur) => ({
-                    key: s2.addr + ':useful:' + ur.item.name, name: ur.item.name, text: () => usefulValue(s2, ur),
+                    key: s2.addr + ':useful:' + ur.item.name, name: translate(ur.item.name), text: () => usefulValue(s2, ur),
                     fav: { addr: s2.addr, sgbd: s2.sgbd, useful: ur.item.name, c: ur.item.c || ur.item.minus, minus: !!ur.item.minus, u: ur.item.u, name: 'Bank 2: ' + ur.item.name },
                 })),
             }));
@@ -1229,10 +1229,10 @@ mgu.run({
         const readAll = (u) => { if (sweep && sweep.u === u) endSweep('stopped'); else startSweep(u); buttons(); };
         function buttons() {
             const pg = current();
-            ui.text('BTN_ACTION', inline ? 'Done' : pg.screen ? 'Layout: ' + SCR.layout(pg.screen.layout).name
+            ui.text('BTN_ACTION', translate(inline ? 'Done' : pg.screen ? 'Layout: ' + SCR.layout(pg.screen.layout).name
                 : pg.group === 'trips' ? (tc.price ? 'Fuel price: ' + tc.price.toFixed(2) + ' ' + currency() : 'Set the fuel price')
-                    : pg.group === 'units' && pg.unit ? (sweep && sweep.u === pg.unit ? 'Stop reading' : 'Считать всё') : busy ? 'Scanning...' : 'Сканировать блоки');
-            ui.text('BTN_BROWSE', browsing ? 'Stop browsing' : 'Browse');
+                    : pg.group === 'units' && pg.unit ? (sweep && sweep.u === pg.unit ? 'Stop reading' : 'Считать всё') : busy ? 'Scanning...' : 'Сканировать блоки'));
+            ui.text('BTN_BROWSE', translate(browsing ? 'Stop browsing' : 'Browse'));
         }
         ui.onClick('BTN_ACTION', () => {
             const pg = current();
@@ -1322,7 +1322,7 @@ mgu.run({
                     if (row.header) return row;
                     const ru = row.unit || u;
                     // (bank 2's rows are under their own headers: their names as they are)
-                    if (row.useful) { const v = usefulValue(ru, row.useful); return { name: row.unit ? row.useful.item.name : bankName(u, row.useful.item), source: (row.unit ? '13:' : '') + usefulSource(ru, row.useful), text: v.text, dim: v.dim, warn: v.warn }; }
+                    if (row.useful) { const v = usefulValue(ru, row.useful); return { name: translate(row.unit ? row.useful.item.name : bankName(u, row.useful.item)), source: (row.unit ? '13:' : '') + usefulSource(ru, row.useful), text: v.text, dim: v.dim, warn: v.warn }; }
                     const v = baseValue(u, row);
                     return { name: nameOf(u, row), source: sourceOf(row), text: v.text, dim: v.dim, warn: v.warn };
                 }),
@@ -1344,7 +1344,7 @@ mgu.run({
                     if (row.header) return row;
                     if (row.note) return { name: row.name, text: row.text, dim: true };
                     const v = usefulValue(row.unit, row.useful);
-                    return { name: row.useful.item.name, source: usefulSource(row.unit, row.useful), text: v.text, dim: v.dim, warn: v.warn };
+                    return { name: translate(row.useful.item.name), source: usefulSource(row.unit, row.useful), text: v.text, dim: v.dim, warn: v.warn };
                 }),
                 scroll: scrolls ? scrollOf(pg) : null, key: listKey(pg), cursor: browsing ? cursor : -1,
                 empty: 'No battery or converter values are available',
