@@ -64,91 +64,91 @@ function gearbox(v) {
 const unitOf = (x, map) => map[x] || '';
 const CONS = { VERBRAUCH_IN_L_S_100KM: 'l/100km', VERBRAUCH_IN_MPG_UK: 'mpg', VERBRAUCH_IN_MPG_US: 'mpg US', VERBRAUCH_IN_KM_S_L: 'km/l', 1: 'l/100km', 2: 'mpg', 3: 'mpg US', 4: 'km/l' };
 const SPEEDS = { KM_S_H__KM: 'km/h', MPH__MLS: 'mph', 1: 'km/h', 2: 'mph' };
-const corner = (name, list, extra) => ['front left', 'front right', 'rear left', 'rear right'].map((w, n) => Object.assign({ id: list[n][0], name: name + ', ' + w, m: list[n][1] }, extra));
+const corner = (name, list, extra) => ['спереди слева', 'спереди справа', 'сзади слева', 'сзади справа'].map((w, n) => Object.assign({ id: list[n][0], name: name + ', ' + w, m: list[n][1] }, extra));
 
 const GROUPS = [
-    { group: 'Engine', items: [
-        { id: 'rpm', name: 'Engine speed', i: CDS, f: 'statusEngineSpeed2', m: 'actualValueRPMEngineCrankshaft', k: 0.25, u: 'rpm', d: 0, bad: [65535] },
+    { group: 'Двигатель', items: [
+        { id: 'rpm', name: 'Частота вращения двигателя', i: CDS, f: 'statusEngineSpeed2', m: 'actualValueRPMEngineCrankshaft', k: 0.25, u: 'rpm', d: 0, bad: [65535] },
         // 12 bit, 0.5 Nm a step, 0 Nm at 2047 (negative = engine braking), 4095 = no value
         { id: 'torque', name: 'Крутящий момент двигателя', i: FES, f: 'statusActualValueTorque2', m: 'actualValueTorqueCrankshaft', k: 0.5, o: -1023.5, u: 'Nm', d: 0, max: 4095 },
-        { id: 'power', name: 'Engine power (torque x speed)', calc: (get) => { const t = get('torque'), r = get('rpm'); return t && r ? { n: Math.max(0, t.n) * r.n / 9549, u: 'kW' } : null; }, d: 0 },
-        { id: 'powerPct', name: 'Power, % of maximum (sport display)', i: FES, f: 'statusVehicleDynamicEngine', m: 'displaySportEnginePower', u: '%', d: 0, bad: [255] },
-        { id: 'torquePct', name: 'Torque, % of maximum (sport display)', i: FES, f: 'statusVehicleDynamicEngine', m: 'displaySportEngineTorque', u: '%', d: 0, bad: [255] },
-        { id: 'powerMax', name: 'Maximum power (sport display)', i: FES, f: 'statusVehicleDynamicEngineMaxValue', m: 'displayMaximumValuePower', raw: true, bad: [65535] },
-        { id: 'torqueMax', name: 'Maximum torque (sport display)', i: FES, f: 'statusVehicleDynamicEngineMaxValue', m: 'displayMaximumValueTorque', raw: true, bad: [65535] },
-        { id: 'boost', name: 'Boost (sport display)', i: FES, f: 'statusSwitchDriveDynamicSport2', m: 'displayBoostPressure', k: boostK, u: 'bar', d: 2, bad: [255], q: true },
-        { id: 'boostMax', name: 'Boost peak (sport display)', i: FES, f: 'statusSwitchDriveDynamicSport2', m: 'displayMaximumValueBoostPressure', k: boostK, u: 'bar', d: 2, bad: [255], q: true },
+        { id: 'power', name: 'Мощность двигателя (по моменту и оборотам)', calc: (get) => { const t = get('torque'), r = get('rpm'); return t && r ? { n: Math.max(0, t.n) * r.n / 9549, u: 'kW' } : null; }, d: 0 },
+        { id: 'powerPct', name: 'Мощность, % от максимальной (спортивный дисплей)', i: FES, f: 'statusVehicleDynamicEngine', m: 'displaySportEnginePower', u: '%', d: 0, bad: [255] },
+        { id: 'torquePct', name: 'Крутящий момент, % от максимального (спортивный дисплей)', i: FES, f: 'statusVehicleDynamicEngine', m: 'displaySportEngineTorque', u: '%', d: 0, bad: [255] },
+        { id: 'powerMax', name: 'Максимальная мощность (спортивный дисплей)', i: FES, f: 'statusVehicleDynamicEngineMaxValue', m: 'displayMaximumValuePower', raw: true, bad: [65535] },
+        { id: 'torqueMax', name: 'Максимальный крутящий момент (спортивный дисплей)', i: FES, f: 'statusVehicleDynamicEngineMaxValue', m: 'displayMaximumValueTorque', raw: true, bad: [65535] },
+        { id: 'boost', name: 'Давление наддува (спортивный дисплей)', i: FES, f: 'statusSwitchDriveDynamicSport2', m: 'displayBoostPressure', k: boostK, u: 'bar', d: 2, bad: [255], q: true },
+        { id: 'boostMax', name: 'Пиковое давление наддува (спортивный дисплей)', i: FES, f: 'statusSwitchDriveDynamicSport2', m: 'displayMaximumValueBoostPressure', k: boostK, u: 'bar', d: 2, bad: [255], q: true },
         { id: 'pedal', name: 'Педаль акселератора', i: PEDAL, f: 'AngleAcceleratorPedal', m: 'actualValueAngleAcceleratorPedal', k: 0.025, u: '%', d: 0, lim: [-2, 102], q: true },
         { id: 'coolant', name: 'Охлаждающая жидкость', i: CDS, f: 'statusEngineTemperature', m: 'temperatureEngineDrive', o: -48, u: '°C', d: 0, bad: [255] },
-        { id: 'oil', name: 'Engine oil', i: CDS, f: 'statusEngineTemperature', m: 'temperatureEngineOilDrive', o: -48, u: '°C', d: 0, bad: [255] },
-        { id: 'oil2', name: 'Engine oil (fuel signal)', i: CDS2, f: 'statusInjectionVolume', m: 'oilTemperature', o: -48, u: '°C', d: 0, bad: [255], q: true },
-        { id: 'running', name: 'Engine', i: CDS, f: 'statusEngineStatus', m: 'statusEngineRunDrive', e: { MOTOR_AUS: 'off', MOTOR_STARTET: 'starting', MOTOR_LAEUFT: 'running', 0: 'off', 1: 'starting', 2: 'running', 3: null } },
-        { id: 'msa', name: 'Auto start-stop', i: CDS2, f: 'statusPushButtonMSA2', m: 'statusFunctionMSA', e: { MSA_AKTIVIERT: 'on', MSA_DEAKTIVIERT: 'off', 0: 'off', 1: 'on', 3: null } },
+        { id: 'oil', name: 'Моторное масло', i: CDS, f: 'statusEngineTemperature', m: 'temperatureEngineOilDrive', o: -48, u: '°C', d: 0, bad: [255] },
+        { id: 'oil2', name: 'Температура моторного масла (сигнал топливной системы)', i: CDS2, f: 'statusInjectionVolume', m: 'oilTemperature', o: -48, u: '°C', d: 0, bad: [255], q: true },
+        { id: 'Работает', name: 'Двигатель', i: CDS, f: 'statusEngineStatus', m: 'statusEngineRunDrive', e: { MOTOR_AUS: 'Выключен', MOTOR_STARTET: 'Запускается', MOTOR_LAEUFT: 'Работает', 0: 'Выключен', 1: 'Запускается', 2: 'Работает', 3: null } },
+        { id: 'msa', name: 'Auto start-stop', i: CDS2, f: 'statusPushButtonMSA2', m: 'statusFunctionMSA', e: { MSA_AKTIVIERT: 'Включено', MSA_DEAKTIVIERT: 'Выключен', 0: 'Выключен', 1: 'Включено', 3: null } },
     ] },
-    { group: 'Fuel and trip', items: [
+    { group: 'Топливо и поездка', items: [
         { id: 'tank', name: 'Топливо в баке', i: KOMBI, f: 'statusRangeTankStatus', m: 'fluidLevelFuelTank', u: 'l', d: 0, max: 255 },
-        { id: 'tankL', name: 'Fuel tank, left half', i: KOMBI, f: 'statusRangeTankStatus', m: 'fluidLevelFuelTankLeftHand', u: 'l', d: 0, max: 255, q: true },
-        { id: 'tankR', name: 'Fuel tank, right half', i: KOMBI, f: 'statusRangeTankStatus', m: 'fluidLevelFuelTankRightHand', u: 'l', d: 0, max: 255, q: true },
-        { id: 'range', name: 'Range', i: KOMBI, f: 'statusRangeTankStatus', m: 'range', u: 'km', d: 0, max: 4095 },
-        { id: 'odo', name: 'Odometer', i: KOMBI, f: 'statusRangeTankStatus', m: 'mileageKilometre', u: 'km', d: 0, max: 16777215, alt: [{ i: VI, f: 'Range' }] },
+        { id: 'tankL', name: 'Левая секция топливного бака', i: KOMBI, f: 'statusRangeTankStatus', m: 'fluidLevelFuelTankLeftHand', u: 'l', d: 0, max: 255, q: true },
+        { id: 'tankR', name: 'Правая секция топливного бака', i: KOMBI, f: 'statusRangeTankStatus', m: 'fluidLevelFuelTankRightHand', u: 'l', d: 0, max: 255, q: true },
+        { id: 'range', name: 'Запас хода', i: KOMBI, f: 'statusRangeTankStatus', m: 'range', u: 'km', d: 0, max: 4095 },
+        { id: 'odo', name: 'Пробег автомобиля', i: KOMBI, f: 'statusRangeTankStatus', m: 'mileageKilometre', u: 'km', d: 0, max: 16777215, alt: [{ i: VI, f: 'Запас хода' }] },
         // the fuel injection signal: taken as a counter of injected fuel; l/h = its rate x a factor learned
         // from the engine unit's own fuel consumption (main.js) - the raw value is next to it to check
-        { id: 'flow', name: 'Fuel consumption (car signal)', flow: true, u: 'l/h', d: 1 },
-        { id: 'instant', name: 'Fuel consumption per 100 km', calc: (get) => { const f = get('flow'), s = get('speed'); return f && f.calib ? f : !f || !s ? null : s.n < 5 ? { text: 'standing', dim: true } : { n: f.n / s.n * 100, u: 'l/100km' }; }, d: 1 },
-        { id: 'fuelRaw', name: 'Fuel injection signal (raw)', i: CDS2, f: 'statusInjectionVolume', m: 'injectionVolumeFuelEngine', raw: true },
-        { id: 'avgCons1', name: 'Average consumption, trip 1', i: KOMBI, f: 'statusBordcomputerAverage', m: 'consumptionAverage1BC1', k: 0.1, d: 1, bad: [65535], q: true, u: (v) => unitOf(v.statusUnitOfMeasurementConsumptionBC, CONS) },
-        { id: 'avgSpeed1', name: 'Average speed, trip 1', i: KOMBI, f: 'statusBordcomputerAverage', m: 'speedAverage1BC1', k: 0.1, d: 1, bad: [65535], q: true, u: (v) => unitOf(v.statusUnitOfMeasurementSpeedBC, SPEEDS) },
-        { id: 'avgCons2', name: 'Average consumption, trip 2', i: KOMBI, f: 'statusBordcomputerAverage', m: 'consumptionAverage2BC2', k: 0.1, d: 1, bad: [65535], q: true, u: (v) => unitOf(v.statusUnitOfMeasurementConsumptionBC, CONS) },
-        { id: 'avgSpeed2', name: 'Average speed, trip 2', i: KOMBI, f: 'statusBordcomputerAverage', m: 'speedAverage2BC2', k: 0.1, d: 1, bad: [65535], q: true, u: (v) => unitOf(v.statusUnitOfMeasurementSpeedBC, SPEEDS) },
-        { id: 'tripTime', name: 'Driving time', i: KOMBI, f: 'statusBordcomputerTravelData', fn: (v) => (typeof v.rideDurationHours === 'number' && typeof v.rideDurationMinutes === 'number' && v.rideDurationHours < 65535 && v.rideDurationMinutes < 60
+        { id: 'flow', name: 'Расход топлива (сигнал автомобиля)', flow: true, u: 'l/h', d: 1 },
+        { id: 'instant', name: 'Мгновенный расход топлива', calc: (get) => { const f = get('flow'), s = get('speed'); return f && f.calib ? f : !f || !s ? null : s.n < 5 ? { text: 'Автомобиль стоит', dim: true } : { n: f.n / s.n * 100, u: 'l/100km' }; }, d: 1 },
+        { id: 'fuelRaw', name: 'Сигнал впрыска топлива (исходное значение)', i: CDS2, f: 'statusInjectionVolume', m: 'injectionVolumeFuelEngine', raw: true },
+        { id: 'avgCons1', name: 'Средний расход, поездка 1', i: KOMBI, f: 'statusBordcomputerAverage', m: 'consumptionAverage1BC1', k: 0.1, d: 1, bad: [65535], q: true, u: (v) => unitOf(v.statusUnitOfMeasurementConsumptionBC, CONS) },
+        { id: 'avgSpeed1', name: 'Средняя скорость, поездка 1', i: KOMBI, f: 'statusBordcomputerAverage', m: 'speedAverage1BC1', k: 0.1, d: 1, bad: [65535], q: true, u: (v) => unitOf(v.statusUnitOfMeasurementSpeedBC, SPEEDS) },
+        { id: 'avgCons2', name: 'Средний расход, поездка 2', i: KOMBI, f: 'statusBordcomputerAverage', m: 'consumptionAverage2BC2', k: 0.1, d: 1, bad: [65535], q: true, u: (v) => unitOf(v.statusUnitOfMeasurementConsumptionBC, CONS) },
+        { id: 'avgSpeed2', name: 'Средняя скорость, поездка 2', i: KOMBI, f: 'statusBordcomputerAverage', m: 'speedAverage2BC2', k: 0.1, d: 1, bad: [65535], q: true, u: (v) => unitOf(v.statusUnitOfMeasurementSpeedBC, SPEEDS) },
+        { id: 'tripTime', name: 'Время в пути', i: KOMBI, f: 'statusBordcomputerTravelData', fn: (v) => (typeof v.rideDurationHours === 'number' && typeof v.rideDurationMinutes === 'number' && v.rideDurationHours < 65535 && v.rideDurationMinutes < 60
             ? { text: v.rideDurationHours + ':' + String(v.rideDurationMinutes).padStart(2, '0') + ' h' } : { bad: true }) },
-        { id: 'tripDist', name: 'Distance driven', i: KOMBI, f: 'statusBordcomputerTravelData', m: 'wayPassed', u: 'km', d: 0, bad: [65535], q: true },
+        { id: 'tripDist', name: 'Пройденное расстояние', i: KOMBI, f: 'statusBordcomputerTravelData', m: 'wayPassed', u: 'km', d: 0, bad: [65535], q: true },
     ] },
     // Live Data's own trip computer (trips.js) from the values above: for screens and the widget
-    { group: 'Trip computer', items: [
-        { id: 'tcKm', name: 'Distance, this trip', tc: 'km', u: 'km', d: 1 },
-        { id: 'tcFuel', name: 'Fuel used, this trip', tc: 'fuel', u: 'l', d: 2 },
-        { id: 'tcAvg', name: 'Consumption, this trip', tc: 'avg', u: 'l/100 km', d: 1 },
-        { id: 'tcCost', name: 'Cost of this trip', tc: 'cost', d: 2 },
-        { id: 'tcTime', name: 'Time, this trip', tc: 'time' },
+    { group: 'Бортовой компьютер', items: [
+        { id: 'tcKm', name: 'Расстояние за поездку', tc: 'km', u: 'km', d: 1 },
+        { id: 'tcFuel', name: 'Израсходовано топлива за поездку', tc: 'fuel', u: 'l', d: 2 },
+        { id: 'tcAvg', name: 'Средний расход за поездку', tc: 'avg', u: 'l/100 km', d: 1 },
+        { id: 'tcCost', name: 'Стоимость поездки', tc: 'cost', d: 2 },
+        { id: 'tcTime', name: 'Время поездки', tc: 'time' },
     ] },
-    { group: 'Driving', items: [
-        { id: 'speed', name: 'Speed', i: V2, f: 'statusCarSpeed2', m: 'speedVehicleCentreOfGravity', k: 0.015625, u: 'km/h', d: 0, bad: [65535] },
+    { group: 'Движение', items: [
+        { id: 'speed', name: 'Скорость', i: V2, f: 'statusCarSpeed2', m: 'speedVehicleCentreOfGravity', k: 0.015625, u: 'km/h', d: 0, bad: [65535] },
         { id: 'gear', name: 'Передача', i: VI, f: 'DataPowerTrain2', fn: selection, alt: [{ i: VI, f: 'statusGearboxDrive', fn: gearbox }] },
-        { id: 'mode', name: 'Driving mode', i: FES, f: 'statusFESVehicleDynamicSwitchHMI', m: 'actualValueModeDrivingExperience', e: { SPORT_DYNAMIC: 'Sport', SPORT_EXPERT: 'Sport plus', ECO_PRO_EFFICIENT: 'Eco pro', 1: 'Sport', 2: 'Sport plus', 3: 'Sport individual', 4: 'Comfort', 5: 'Comfort plus', 6: 'Comfort individual', 7: 'Eco pro', 8: 'Eco pro plus', 9: 'Eco pro individual', 10: 'Adaptive', 0: null, 61: null, 62: null, 63: null } },
-        { id: 'gLong', name: 'Acceleration, forward', i: CDS2, f: 'statusLongitudinalAccelerationMassCenter', m: 'longitudinalAccelerationCentreOfGravity', k: 0.002 / G0, o: -65 / G0, u: 'g', d: 2, bad: [65535] },
-        { id: 'gLat', name: 'Acceleration, sideways', i: CDS2, f: 'statusLateralAccelerationMassCenter', m: 'lateralAccelerationCentreOfGravity', k: 0.002 / G0, o: -65 / G0, u: 'g', d: 2, bad: [65535] },
-        { id: 'yaw', name: 'Yaw rate', i: CDS2, f: 'statusYawVelocityVehicle', m: 'yawVelocityVehicle', k: 0.005, o: -163.84, u: '°/s', d: 1, bad: [65535], q: true },
-        { id: 'roll', name: 'Roll rate', i: CDS, f: 'datenFahrdynamiksensorErweitert', m: 'wankgeschwindigkeitSchwerpunkt', k: 0.005, o: -163.84, u: '°/s', d: 1, bad: [65535], q: true },
-        { id: 'pitch', name: 'Pitch rate', i: CDS, f: 'datenFahrdynamiksensorErweitert', m: 'nickgeschwindigkeitSchwerpunkt', k: 0.005, o: -163.84, u: '°/s', d: 1, bad: [65535], q: true },
-        { id: 'steer', name: 'Steering wheel angle', i: STEER, f: 'ActualSteeringAngleDriver', m: 'actualValueSteeringAngleDriver', s16: true, k: 0.04395, u: '°', d: 0, lim: [-900, 900], q: true,
+        { id: 'mode', name: 'Режим движения', i: FES, f: 'statusFESVehicleDynamicSwitchHMI', m: 'actualValueModeDrivingExperience', e: { SPORT_DYNAMIC: 'Спорт', SPORT_EXPERT: 'Спорт Плюс', ECO_PRO_EFFICIENT: 'Эко Про', 1: 'Спорт', 2: 'Спорт Плюс', 3: 'Спорт Индивидуальный', 4: 'Комфорт', 5: 'Комфорт Плюс', 6: 'Комфорт Индивидуальный', 7: 'Эко Про', 8: 'Эко Про Плюс', 9: 'Эко Про Индивидуальный', 10: 'Адаптивный', 0: null, 61: null, 62: null, 63: null } },
+        { id: 'gLong', name: 'Продольное ускорение', i: CDS2, f: 'statusLongitudinalAccelerationMassCenter', m: 'longitudinalAccelerationCentreOfGravity', k: 0.002 / G0, o: -65 / G0, u: 'g', d: 2, bad: [65535] },
+        { id: 'gLat', name: 'Поперечное ускорение', i: CDS2, f: 'statusLateralAccelerationMassCenter', m: 'lateralAccelerationCentreOfGravity', k: 0.002 / G0, o: -65 / G0, u: 'g', d: 2, bad: [65535] },
+        { id: 'yaw', name: 'Угловая скорость рыскания', i: CDS2, f: 'statusYawVelocityVehicle', m: 'yawVelocityVehicle', k: 0.005, o: -163.84, u: '°/s', d: 1, bad: [65535], q: true },
+        { id: 'roll', name: 'Угловая скорость крена', i: CDS, f: 'datenFahrdynamiksensorErweitert', m: 'wankgeschwindigkeitSchwerpunkt', k: 0.005, o: -163.84, u: '°/s', d: 1, bad: [65535], q: true },
+        { id: 'pitch', name: 'Угловая скорость тангажа', i: CDS, f: 'datenFahrdynamiksensorErweitert', m: 'nickgeschwindigkeitSchwerpunkt', k: 0.005, o: -163.84, u: '°/s', d: 1, bad: [65535], q: true },
+        { id: 'steer', name: 'Угол поворота рулевого колеса', i: STEER, f: 'ActualSteeringAngleDriver', m: 'actualValueSteeringAngleDriver', s16: true, k: 0.04395, u: '°', d: 0, lim: [-900, 900], q: true,
             alt: [{ i: STEER, f: 'actualSteeringAngleDriverNoCRC' }] },
-        { id: 'handbrake', name: 'Parking brake', i: CDS, f: 'statusHandBrake', m: 'statusContactHandBrake', e: { HANDBREMSE_ANGEZOGEN: 'applied', HANDBREMSE_GELOEST: 'released', NICHT_CODIERT: null, 1: 'released', 2: 'applied', 0: null, 3: null } },
-        { id: 'outside', name: 'Outside temperature', i: ENV, f: 'ExteriorTemperature', m: 'temperatureExterior', k: 0.5, o: -40, u: '°C', d: 1, bad: [255] },
-        { id: 'battery', name: '12 V battery charge', i: CDS, f: 'statusBattery2', m: 'conditionBatteryChargingCondition', u: '%', d: 0, max: 151 },
-        { id: 'oilLevel', name: 'Engine oil level', i: V2, f: 'statusOilDipstick2', m: 'fluidLevelEngineOilRelative', e: { MOTOROELSTAND_UNTER_MINIMUM: 'below minimum', MOTOROELSTAND_AM_MINIMUM: 'at minimum', MOTOROELSTAND_1_4: '1/4',
-            MOTOROELSTAND_2_4: '2/4', MOTOROELSTAND_3_4: '3/4', MOTOROELSTAND_4_4: 'full', MOTOROELSTAND_5_4: 'above full', MOTOROELSTAND_UEBERFUELLT: 'overfilled', MOTOROELSTAND_OK: 'OK', SERVICEFUNKTION_AKTIV: 'measuring',
-            0: 'below minimum', 1: 'at minimum', 2: '1/4', 3: '2/4', 4: '3/4', 5: 'full', 6: 'above full', 7: 'overfilled', 13: 'OK', 14: 'measuring', 15: null } },
+        { id: 'handbrake', name: 'Стояночный тормоз', i: CDS, f: 'statusHandBrake', m: 'statusContactHandBrake', e: { HANDBREMSE_ANGEZOGEN: 'Включён', HANDBREMSE_GELOEST: 'Выключен', NICHT_CODIERT: null, 1: 'Выключен', 2: 'Включён', 0: null, 3: null } },
+        { id: 'outside', name: 'Температура наружного воздуха', i: ENV, f: 'ExteriorTemperature', m: 'temperatureExterior', k: 0.5, o: -40, u: '°C', d: 1, bad: [255] },
+        { id: 'battery', name: 'Заряд аккумулятора 12 В', i: CDS, f: 'statusBattery2', m: 'conditionBatteryChargingCondition', u: '%', d: 0, max: 151 },
+        { id: 'oilLevel', name: 'Уровень моторного масла', i: V2, f: 'statusOilDipstick2', m: 'fluidLevelEngineOilRelative', e: { MOTOROELSTAND_UNTER_MINIMUM: 'Ниже минимума', MOTOROELSTAND_AM_MINIMUM: 'На минимуме', MOTOROELSTAND_1_4: '1/4',
+            MOTOROELSTAND_2_4: '2/4', MOTOROELSTAND_3_4: '3/4', MOTOROELSTAND_4_4: 'Полный', MOTOROELSTAND_5_4: 'Выше максимума', MOTOROELSTAND_UEBERFUELLT: 'Перелив', MOTOROELSTAND_OK: 'OK', SERVICEFUNKTION_AKTIV: 'Измерение',
+            0: 'Ниже минимума', 1: 'На минимуме', 2: '1/4', 3: '2/4', 4: '3/4', 5: 'Полный', 6: 'Выше максимума', 7: 'Перелив', 13: 'OK', 14: 'Измерение', 15: null } },
     ] },
-    { group: 'Tyres', items: [].concat(
+    { group: 'Шины', items: [].concat(
         // 0.1 a step in the car's pressure unit (shown in bar), 65532 and up = no value (x_call); temperatures in °C + 40 (M Vitals, seen on a car)
-        corner('Tyre pressure', [['pFL', 'actualValuePressureTyreFLH'], ['pFR', 'actualValuePressureTyreFRH'], ['pRL', 'actualValuePressureTyreRLH'], ['pRR', 'actualValuePressureTyreRRH']],
+        corner('Давление в шинах', [['pFL', 'actualValuePressureTyreFLH'], ['pFR', 'actualValuePressureTyreFRH'], ['pRL', 'actualValuePressureTyreRLH'], ['pRR', 'actualValuePressureTyreRRH']],
             { i: TPMS, f: 'statusTyrePressure', k: tyreK, u: 'bar', d: 1, max: 65532 }),
-        corner('Tyre temperature', [['tFL', 'actualValueTemperatureTyreFLH'], ['tFR', 'actualValueTemperatureTyreFRH'], ['tRL', 'actualValueTemperatureTyreRLH'], ['tRR', 'actualValueTemperatureTyreRRH']],
+        corner('Температура шин', [['tFL', 'actualValueTemperatureTyreFLH'], ['tFR', 'actualValueTemperatureTyreFRH'], ['tRL', 'actualValueTemperatureTyreRLH'], ['tRR', 'actualValueTemperatureTyreRRH']],
             { i: TPMS, f: 'statusTyreTemperature', o: -40, u: '°C', d: 0, bad: [65535], lim: [-40, 150] }),
-        corner('Tyre pressure target', [['ptFL', 'targetPressureTyreFLH'], ['ptFR', 'targetPressureTyreFRH'], ['ptRL', 'targetPressureTyreRLH'], ['ptRR', 'targetPressureTyreRRH']],
+        corner('Целевое давление в шинах', [['ptFL', 'targetPressureTyreFLH'], ['ptFR', 'targetPressureTyreFRH'], ['ptRL', 'targetPressureTyreRLH'], ['ptRR', 'targetPressureTyreRRH']],
             { i: TPMS, f: 'statusTargetTyrePressure', k: tyreK, u: 'bar', d: 1, max: 65532 })) },
     // sent on the car's own networks; whether the head unit gets them, and their scaling, is still to be seen
-    { group: 'Chassis (raw numbers)', items: [].concat(
-        corner('Wheel speed', [['wFL', 'actualValueRPMWheelFLH'], ['wFR', 'actualValueRPMwheelFRH'], ['wRL', 'actualValueRPMWheelRLH'], ['wRR', 'actualValueRPMWheelRRH']],
+    { group: 'Шасси (исходные значения)', items: [].concat(
+        corner('Скорость вращения колеса', [['wFL', 'actualValueRPMWheelFLH'], ['wFR', 'actualValueRPMwheelFRH'], ['wRL', 'actualValueRPMWheelRLH'], ['wRR', 'actualValueRPMWheelRRH']],
             { i: PT, f: 'ActualValueRPMWheel', raw: true }), [
-        { id: 'slope', name: 'Road gradient, along', i: VM, f: 'LaneSlope', m: 'actualValueLongitudinalGradientRoadway', raw: true },
-        { id: 'slopeSide', name: 'Road gradient, across', i: VM, f: 'LaneSlope', m: 'actualValueTransverseGradientRoadway', raw: true },
-        { id: 'mass', name: 'Vehicle mass', i: V2, f: 'statusVehicleMass', m: 'massVehicle', raw: true, alt: [{ i: VM, f: 'MassVehicle' }] },
-        { id: 'abs', name: 'ABS status', i: DSC, f: 'StabilizationManagement', m: 'qualifierFunctionABS', raw: true, x: true },
-        { id: 'asc', name: 'Traction control (ASC) status', i: DSC, f: 'StabilizationManagement', m: 'qualifierFunctionASC', raw: true, x: true },
-        { id: 'dsc', name: 'Stability control (DSC) status', i: DSC, f: 'StabilizationManagement', m: 'qualifierFunctionFDR', raw: true, x: true },
-        { id: 'braking', name: 'Driver braking', i: DSC, f: 'StabilizationManagement', m: 'statusBrakingDriver', raw: true },
+        { id: 'slope', name: 'Продольный уклон дороги', i: VM, f: 'LaneSlope', m: 'actualValueLongitudinalGradientRoadway', raw: true },
+        { id: 'slopeSide', name: 'Поперечный уклон дороги', i: VM, f: 'LaneSlope', m: 'actualValueTransverseGradientRoadway', raw: true },
+        { id: 'mass', name: 'Масса автомобиля', i: V2, f: 'statusVehicleMass', m: 'massVehicle', raw: true, alt: [{ i: VM, f: 'MassVehicle' }] },
+        { id: 'abs', name: 'Состояние ABS', i: DSC, f: 'StabilizationManagement', m: 'qualifierFunctionABS', raw: true, x: true },
+        { id: 'asc', name: 'Состояние противобуксовочной системы (ASC)', i: DSC, f: 'StabilizationManagement', m: 'qualifierFunctionASC', raw: true, x: true },
+        { id: 'dsc', name: 'Состояние системы стабилизации (DSC)', i: DSC, f: 'StabilizationManagement', m: 'qualifierFunctionFDR', raw: true, x: true },
+        { id: 'braking', name: 'Торможение водителем', i: DSC, f: 'StabilizationManagement', m: 'statusBrakingDriver', raw: true },
     ]) },
 ];
 
