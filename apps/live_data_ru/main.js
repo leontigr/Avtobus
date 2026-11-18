@@ -1537,7 +1537,7 @@ mgu.run({
             const line = (d) => { if (!d) return ''; const v = wvalue(d); return SCR.short(d.name).slice(0, Math.max(4, 21 - v.length)) + ' ' + v; };
             const first = list[0], frac = first && G.isNum(first.n) ? G.clamp((first.n - first.sc.min) / (first.sc.max - first.sc.min), 0, 1) : null;
             const cells = {
-                Title: [on ? 'Live Data' : '', 'Text'],
+                Title: [on ? 'Данные онлайн RU' : '', 'Text'],
                 TextRecordings: [on ? (sc ? line(list[0]) : 'Make a screen in the app') : '', 'Text'],
                 TextCam: [on ? line(list[1]) : '', 'Text'],
                 TimeElapsed: [on ? line(list[2]) : '', 'Text'],
@@ -1567,7 +1567,7 @@ mgu.run({
             if (sc) SCR.draw(rec, t, G, SCR.layout(sc.layout), slotsOf(sc).map(slotData), box, true, -1, fit);
             else {
                 const cx = box.x + box.w / 2, cy = box.y + box.h / 2;
-                rec.text('Live Data', cx, cy - 6, 30, t.text, { align: 'center', font: 'bold' });
+                rec.text('Данные онлайн RU', cx, cy - 6, 30, t.text, { align: 'center', font: 'bold' });
                 rec.text(fit(rec, screens.length ? 'No Gauges ' + settings.get('widget') + ' (Settings)' : 'Make a screen in the app first', 16, box.w), cx, cy + 24, 16, t.text, { align: 'center' });
             }
             const cv = (wcan[key] || (wcan[key] = new ScaledCanvas(w, h, scale))).clear([0, 0, 0, 0]);

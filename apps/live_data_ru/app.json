@@ -1,7 +1,7 @@
 {
-  "id": "live_data",
-  "title": "Данные онлайн",
-  "description": "Просмотр текущих параметров автомобиля и блоков управления, бортовой компьютер поездок с расчётом стоимости топлива и собственные экраны приборов. Один из экранов можно вывести в виджет главного меню.",
+  "id": "live_data_ru",
+  "title": "Live Data RU",
+  "description": "Русифицированная версия Live Data: текущие параметры автомобиля и блоков управления, бортовой компьютер поездок и пользовательские экраны приборов.",
   "version": "1.0.18",
   "vendor": "custom",
   "loggingId": "OA9D",
@@ -98,7 +98,7 @@
     {
       "name": "MAIN",
       "kind": "canvas",
-      "title": "Live Data",
+      "title": "Данные онлайн",
       "buttons": [
         [
           "BTN_ACTION",
@@ -121,7 +121,7 @@
   ],
   "startWidget": {
     "comment": "Home-screen widget, as eDrive's: the layout and cell names of BMW's Drive Recorder widget on this firmware; the picture of the chosen screen goes into BackgroundImage1 (384 x 256). The HMI scales it up (about 2x on the G20) and crops it centred (safe: the share it cuts off each edge, measured on the G05 and on a G20 photo), and fades the edges, the top most: the setting widgetFit keeps the gauges further in (screens.js FIT).",
-    "name": "Live Data",
+    "name": "Данные онлайн RU",
     "layout": "LT_Table_OnlineApps_DriveRecorderWidget",
     "image": "BackgroundImage1",
     "scale": 2,
